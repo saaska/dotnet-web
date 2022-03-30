@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using dotnet_web.Models;
 
 namespace dotnetweb.Migrations
 {
     [DbContext(typeof(SqlServerDbContext))]
-    partial class SqlServerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220330154303_Seed2CLients1Order")]
+    partial class Seed2CLients1Order
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -77,10 +79,7 @@ namespace dotnetweb.Migrations
                     b.ToTable("Orders");
 
                     b.HasData(
-                        new { Id = 1, ClientId = 1, CreatedOn = new DateTime(2022, 3, 30, 17, 53, 0, 0, DateTimeKind.Unspecified), Name = "Драконьи шкуры", Status = 2 },
-                        new { Id = 2, ClientId = 1, CreatedOn = new DateTime(2022, 3, 31, 10, 0, 0, 0, DateTimeKind.Unspecified), Name = "Автозапчасти", Status = 1 },
-                        new { Id = 3, ClientId = 2, CreatedOn = new DateTime(2021, 2, 1, 10, 5, 34, 0, DateTimeKind.Unspecified), Name = "8\" Inch Floppy Disks", Status = 0 },
-                        new { Id = 4, ClientId = 2, CreatedOn = new DateTime(2019, 12, 31, 18, 30, 0, 0, DateTimeKind.Unspecified), Name = "Bell Labs Technical Reports 1970-1974", Status = 0 }
+                        new { Id = 1, ClientId = 1, CreatedOn = new DateTime(2022, 3, 31, 10, 0, 0, 0, DateTimeKind.Unspecified), Name = "Dragon Skin", Status = 2 }
                     );
                 });
 

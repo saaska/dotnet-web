@@ -7,7 +7,7 @@ using System.Globalization;
 
 namespace dotnet_web.Models
 {
-    public enum AStatus { ToDo, InProgress, Done }
+    public enum StatusEnumeration { ToDo, InProgress, Done }
 
 
     public class Client
@@ -46,7 +46,7 @@ namespace dotnet_web.Models
         public DateTime CreatedOn { get; set; }
 
         [Required]
-        public AStatus Status { get; set; }
+        public StatusEnumeration Status { get; set; }
 
         public int ClientId { get; set; }
         public Client Client { get; set; }
@@ -67,5 +67,72 @@ namespace dotnet_web.Models
 
         public DbSet<Client> Clients { get; set; }
         public DbSet<Order> Orders { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            GregorianCalendar gc = new GregorianCalendar();
+            modelBuilder.Entity<Client>().HasData(
+                new Client()
+                {
+                    Id = 1,
+                    Name = "Поликарп Петров",
+                    BirthDate = new DateTime(1970, 1, 13, gc),
+                    Inn = "140123456789",
+                    PhoneNumber = "+79245551122"
+                },
+                new Client()
+                {
+                    Id = 2,
+                    Name = "Юникс Мультиксович Линукс",
+                    BirthDate = new DateTime(1970, 1, 1, gc),
+                    Inn = "1234567890",
+                    PhoneNumber = "+14151234567",
+                    Email = "nokia@bell-labs.com"
+                },
+                new Client()
+                {
+                    Id = 3,
+                    Name = "Шерлок Холмс",
+                    BirthDate = new DateTime(1854, 1, 6, gc),
+                    Inn = "1234567890",
+                    PhoneNumber = "+4402072243688",
+                    Email = "sherlock@holmes.co.uk"
+                }
+            );
+            modelBuilder.Entity<Order>().HasData(
+                new Order()
+                {
+                    Id = 1,
+                    Name = "Драконьи шкуры",
+                    CreatedOn = new DateTime(2022, 3, 30, 17, 53, 0),
+                    ClientId = 1,
+                    Status = StatusEnumeration.Done
+                },
+                new Order()
+                {
+                    Id = 2,
+                    Name = "Автозапчасти",
+                    CreatedOn = new DateTime(2022, 3, 31, 10, 0, 0),
+                    ClientId = 1,
+                    Status = StatusEnumeration.InProgress
+                },
+                new Order()
+                {
+                    Id = 3,
+                    Name = "8\" Inch Floppy Disks",
+                    CreatedOn = new DateTime(2021, 2, 1, 10, 05, 34),
+                    ClientId = 2,
+                    Status = StatusEnumeration.ToDo
+                },
+                new Order()
+                {
+                    Id = 4,
+                    Name = "Bell Labs Technical Reports 1970-1974",
+                    CreatedOn = new DateTime(2019, 12, 31, 18, 30, 0),
+                    ClientId = 2,
+                    Status = StatusEnumeration.ToDo
+                }
+            );
+        }
     }
 }
