@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
-using System;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Globalization;
 
 namespace dotnet_web.Models
 {
@@ -17,7 +19,7 @@ namespace dotnet_web.Models
         [MaxLength(100), Required]
         public string Name { get; set; }
 
-        [DataType(DataType.Date), Required]
+        [Column(TypeName = "Date"), Required]
         public DateTime BirthDate { get; set; }
 
         [MinLength(10), MaxLength(12), Required]
@@ -40,7 +42,7 @@ namespace dotnet_web.Models
         [MaxLength(100), Required]
         public string Name { get; set; }
 
-        [DataType(DataType.Date), Required]
+        [Required]
         public DateTime CreatedOn { get; set; }
 
         [Required]
