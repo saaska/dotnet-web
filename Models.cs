@@ -11,32 +11,38 @@ namespace dotnet_web.Models
     {
         public int Id { get; set; }
 
-        [DataType(DataType.Date)]
+        [MaxLength(100), Required]
+        public string Name { get; set; }
+
+        [DataType(DataType.Date), Required]
         public DateTime CreatedOn { get; set; }
 
+        [Required]
         public AStatus Status { get; set; }
     }
 
     public class Client
     {
+        private List<Order> orders;
+
         public int Id { get; set; }
 
-        [MaxLength(100)]
+        [MaxLength(100), Required]
         public string Name { get; set; }
 
-        [DataType(DataType.Date)]
+        [DataType(DataType.Date), Required]
         public DateTime BirthDate { get; set; }
 
-        [MaxLength(12)]
+        [MinLength(10), MaxLength(12), Required]
         public string Inn { get; set; }
 
-        [MaxLength(14)]
+        [MaxLength(14), Required]
         public string PhoneNumber { get; set; }
 
         [MaxLength(60)]
         public string Email { get; set; }
 
-        List<Order> Orders { get; set; }
+        List<Order> Orders { get; set;}
     }
 
 
