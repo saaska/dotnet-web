@@ -7,19 +7,6 @@ namespace dotnet_web.Models
 {
     public enum AStatus { ToDo, InProgress, Done }
 
-    public class Order
-    {
-        public int Id { get; set; }
-
-        [MaxLength(100), Required]
-        public string Name { get; set; }
-
-        [DataType(DataType.Date), Required]
-        public DateTime CreatedOn { get; set; }
-
-        [Required]
-        public AStatus Status { get; set; }
-    }
 
     public class Client
     {
@@ -42,9 +29,27 @@ namespace dotnet_web.Models
         [MaxLength(60)]
         public string Email { get; set; }
 
-        List<Order> Orders { get; set;}
+        public IList<Order> Orders { get; } = new List<Order>();
     }
 
+
+    public class Order
+    {
+        public int Id { get; set; }
+
+        [MaxLength(100), Required]
+        public string Name { get; set; }
+
+        [DataType(DataType.Date), Required]
+        public DateTime CreatedOn { get; set; }
+
+        [Required]
+        public AStatus Status { get; set; }
+
+        public int ClientId { get; set; }
+        public Client Client { get; set; }
+    }
+    
 
     public class SqlServerDbContext : DbContext
     {
