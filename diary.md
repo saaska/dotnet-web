@@ -4,6 +4,7 @@
 * Visual Studio Code
 * .NET Core 
 * Azure Data Studio
+* Postman
 
 
 # БД
@@ -56,3 +57,23 @@
 		REFERENCES [Order](id)
 		ON DELETE CASCADE
 	) 
+
+
+
+## TODO
+* ~~Пройти туториал для minimal API~~  <br />среда, 30 марта 2022 г. 11:52:10 (+09)
+* Понять, как мне лучше: сопрягать EF с существующей базой, или создавать из кода
+* Реализовать подключение к базе из .NET 6
+* Адаптировать решение под более старые версии фреймворка
+* ...
+
+### Tutorial Minimal API
+[Туториал в оф документации](https://docs.microsoft.com/en-us/aspnet/core/tutorials/min-web-api?view=aspnetcore-6.0&tabs=visual-studio-code) относится к .NET 6. VS2019 на mac не работает с .NET 6! Есть отзличия от старых версий: убрали startup.cs, из Program.cs выкинули очень много, нет `namespace`, `public class Program` и т.д. Сразу `var builder = WebApplication.CreateBuilder(args);`. Туториал демонстрирует минимальные API без контроллеров на примере EF с базой в памяти (`UseInMemoryDatabase`).
+
+Для установки EF: из папки проекта
+
+    dotnet add package Microsoft.EntityFrameworkCore.InMemory --prerelease
+    dotnet add package Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore --prerelease
+
+Вторая команда не прошла, `--prerelease` требует .NET 7😳. без этого ключа встала.
+
