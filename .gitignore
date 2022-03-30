@@ -1,4 +1,6 @@
 db/
+Properties/launchSettings.json
+
 
 # https://github.com/github/gitignore/blob/main/community/DotNet/core.gitignore, licensed under CC0
 *.swp
