@@ -1,6 +1,6 @@
 {
   "ConnectionStrings": {
-    "DefaultDatabase": "Server=127.0.0.1,1433;Database=backend;User Id=sa;Password=XXXXXXXX"
+    "SQLServerDocker": "Server=127.0.0.1,1433;Database=backend;User Id=sa;Password=XXXXXXXX"
   },
   "Logging": {
     "LogLevel": {
