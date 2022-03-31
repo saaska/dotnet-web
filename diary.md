@@ -33,10 +33,15 @@
 
 ## TODO
 * ~~Пройти туториал для minimal API~~  <br />среда, 30 марта 2022 г. 11:52:10 (+09)
-* ~~Адаптировать решение под более старые версии фреймворка~~ 
-* Понять, как мне лучше: сопрягать EF с существующей базой, или создавать из кода
-* Реализовать подключение к базе из .NET 6
-* ...
+* ~~Адаптировать решение под более старые версии фреймворка: сделано для 5~~ 
+* ~~Понять, как мне лучше: сопрягать EF с существующей базой, или создавать из кода: Code First~~
+* ~~Реализовать подключение к базе из .NET Core 2.1~~
+* ~~Сгенерить шаблоны WebAPI ~~ четверг, 31 марта 2022 г. 10:26:21 (+09)
+* Доработать шаблоны на вставку, отображение связанных частей
+* Попробовать Postman, попробовать подключить Swagger
+* Понять, на чем делать фронт
+
+
 
 ### Tutorial Minimal API
 [Туториал в оф документации](https://docs.microsoft.com/en-us/aspnet/core/tutorials/min-web-api?view=aspnetcore-6.0&tabs=visual-studio-code) относится к .NET 6. VS2019 на mac не работает с .NET 6! Есть отзличия от старых версий: убрали startup.cs, из Program.cs выкинули очень много, нет `namespace`, `public class Program` и т.д. Сразу `var builder = WebApplication.CreateBuilder(args);`. Туториал демонстрирует минимальные API без контроллеров на примере EF с базой в памяти (`UseInMemoryDatabase`).
@@ -75,3 +80,23 @@ Code-First, поскольку база полуэфемерная в докер
 
     public int ClientId { get; set; }
     public Client Client { get; set; }
+
+### Подключение к базе
+
+Строка подключения базы пишется в словаре в appsettings.json, и доступен из кода, например, при указании параметров типа `"name=ConnectionStrings:<ключ словаря строк подключения>"` в опциях. 
+
+### Шаблоны Web API 
+Файлы контроллеров для Web API при создании из шаблона в Visual Studio пустые, возвращают типа `return new string[] { "value1", "value2" };`. Устанавливаются пакеты `Microsoft.VisualStudio.Web.CodeGeneration.Design`, `Microsoft.EntityFrameworkCore.Design` (уже был установлен) и инструмент для скаффолдинга:
+
+    dotnet tool install --global dotnet-aspnet-codegenerator --version 2.1.11
+
+После этого можно по моделям породить контроллеры апи:
+
+    dotnet aspnet-codegenerator controller -name ClientsController -async -api -m Client -dc SqlServerDbContext -outDir Controllers
+
+    dotnet aspnet-codegenerator controller -name OrdersController -async -api -m Order -dc SqlServerDbContext -outDir Controllers
+
+Дурацкий совет: не забыть остановить проект, если он запущен, перед выполнением этих команд.
+
+Создаются методы `GetXs`, `GetX/id`, `PutX/id`, `PostX`, `DeleteX/id`. Весь CRUD работает. Поля в json конвертятся в JS camel case: `BirthDate` в C# -> `birthDate` в JSON. Список orders в клиентах при этом пуст [], и ссылка client в заказах null, хотя FK ClientId в табличках выставлен правильно. ???
+
