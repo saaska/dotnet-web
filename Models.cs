@@ -49,6 +49,8 @@ namespace dotnet_web.Models
         public StatusEnumeration Status { get; set; }
 
         public int ClientId { get; set; }
+
+        [ForeignKey("ClientId")]
         public Client Client { get; set; }
     }
     
