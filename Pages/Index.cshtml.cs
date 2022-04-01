@@ -7,22 +7,23 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using dotnet_web.Models;
 
-namespace dotnet_web
+namespace dotnetweb.Pages.Orders
 {
-    public class ClientListModel : PageModel
+    public class IndexModel : PageModel
     {
         private readonly dotnet_web.Models.SqlServerDbContext _context;
 
-        public ClientListModel(dotnet_web.Models.SqlServerDbContext context)
+        public IndexModel(dotnet_web.Models.SqlServerDbContext context)
         {
             _context = context;
         }
 
-        public IList<Client> Client { get;set; }
+        public IList<Order> Order { get;set; }
 
         public async Task OnGetAsync()
         {
-            Client = await _context.Clients.ToListAsync();
+            Order = await _context.Orders
+                .Include(o => o.Client).ToListAsync();
         }
     }
 }

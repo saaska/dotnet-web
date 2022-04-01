@@ -7,7 +7,7 @@ using System.Globalization;
 
 namespace dotnet_web.Models
 {
-    public enum StatusEnumeration { ToDo, InProgress, Done }
+    public enum Status { ToDo, InProgress, Done }
 
 
     public class Client
@@ -16,16 +16,23 @@ namespace dotnet_web.Models
 
         public int Id { get; set; }
 
-        [MaxLength(100), Required]
+        [MaxLength(100)]
+        [Required]
         public string Name { get; set; }
 
-        [Column(TypeName = "Date"), Required]
+        [Display(Name = "Date of Birth")]
+        [Column(TypeName = "Date")]
+        [Required]
         public DateTime BirthDate { get; set; }
 
-        [MinLength(10), MaxLength(12), Required]
+        [Display(Name = "INN")]
+        [MinLength(10), MaxLength(12)]
+        [Required]
         public string Inn { get; set; }
-
-        [MaxLength(14), Required]
+        
+        [Display(Name = "Phone Number")]
+        [MaxLength(14)]
+        [Required]
         public string PhoneNumber { get; set; }
 
         [MaxLength(60)]
@@ -39,14 +46,16 @@ namespace dotnet_web.Models
     {
         public int Id { get; set; }
 
-        [MaxLength(100), Required]
+        [MaxLength(100)]
+        [Required]
         public string Name { get; set; }
 
+        [Display(Name = "Created On")]
         [Required]
         public DateTime CreatedOn { get; set; }
 
         [Required]
-        public StatusEnumeration Status { get; set; }
+        public Status Status { get; set; }
 
         public int ClientId { get; set; }
 
@@ -108,7 +117,7 @@ namespace dotnet_web.Models
                     Name = "Драконьи шкуры",
                     CreatedOn = new DateTime(2022, 3, 30, 17, 53, 0),
                     ClientId = 1,
-                    Status = StatusEnumeration.Done
+                    Status = Status.Done
                 },
                 new Order()
                 {
@@ -116,7 +125,7 @@ namespace dotnet_web.Models
                     Name = "Автозапчасти",
                     CreatedOn = new DateTime(2022, 3, 31, 10, 0, 0),
                     ClientId = 1,
-                    Status = StatusEnumeration.InProgress
+                    Status = Status.InProgress
                 },
                 new Order()
                 {
@@ -124,7 +133,7 @@ namespace dotnet_web.Models
                     Name = "8\" Inch Floppy Disks",
                     CreatedOn = new DateTime(2021, 2, 1, 10, 05, 34),
                     ClientId = 2,
-                    Status = StatusEnumeration.ToDo
+                    Status = Status.ToDo
                 },
                 new Order()
                 {
@@ -132,7 +141,7 @@ namespace dotnet_web.Models
                     Name = "Bell Labs Technical Reports 1970-1974",
                     CreatedOn = new DateTime(2019, 12, 31, 18, 30, 0),
                     ClientId = 2,
-                    Status = StatusEnumeration.ToDo
+                    Status = Status.ToDo
                 }
             );
         }
