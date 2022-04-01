@@ -37,10 +37,12 @@
 * ~~Понять, как мне лучше: сопрягать EF с существующей базой, или создавать из кода: Code First~~
 * ~~Реализовать подключение к базе из .NET Core 2.1~~
 * ~~Сгенерить шаблоны WebAPI~~ четверг, 31 марта 2022 г. 10:26:21 (+09)
-* ~~Понять, что происходит с навигационными свойствами~~ четверг, 31 марта 2022 г. 12:16:15 (+09)
+* ~~Понять, что происходит с навигационными свойствами~~: ok четверг, 31 марта 2022 г. 12:16:15 (+09)
 * Доработать шаблоны на вставку, отображение связанных частей
 * Попробовать Postman, попробовать подключить Swagger
-* Понять, на чем делать фронт
+* ~~Понять, на чем делать фронт~~: Razor четверг, 31 марта 2022 г. 17:03:12 (+09)
+* ~~Сгенерить шаблоны Razor Pages, посмотреть чего не хватает~~: глюки с fk, enum. пятница,  1 апреля 2022 г. 11:11:40 (+09)
+* Исправить страницы формы
 
 
 
@@ -104,3 +106,22 @@ Code-First, поскольку база полуэфемерная в докер
 ### Понять, что происходит с навигационными свойствами
 
 null в ссылках это нормально. Для загрузки связанных объектов надо вызывать методы типа `_context.Orders.orders.Include(o => o.Client)`. Если нужны только какие-то поля связанного объекта, например, если для заказа от клиента только имя, можно вместо сырых Entity использовать DTO (Data Transfer Object) которые служат как прокси, скрывают или переопределяют какие-то свойства. 
+
+### Понять, на чем делать фронт
+
+Можно прицепить React, но из скаффолдинга студии для .Net Core 2.1 он старый, тянет миллиард пакетов в node_modules, из них куча устарели, короче, возни ради 2 крудов многовато. Razor Pages – разумный вариант.
+
+### Сгенерить шаблоны Razor Pages, посмотреть чего не хватает 
+
+Скаффолдятся, но из VS2019 проблемы. Он пытается поставить тулзу для генерации, с новым ключом --ignore-failed-sources, которого не понимает установщик для версии 2.1. Надо помочь вручную из командной строки без этого ключа.
+
+    dotnet tool install --global dotnet-aspnet-codegenerator --version 2.1.10
+
+При генерации зачем-то пытается тянуть sqlite, хотя находит и принимает выбор DbContext из кода. Тоже с командной строки без ключа --useSqlite:
+
+    dotnet aspnet-codegenerator --configuration "Debug" --project "/Users/pav/experiments/aeb/dotnet-web/dotnet-web.csproj" razorpage --model Client --dataContext SqlServerDbContext  --referenceScriptLibraries  --useDefaultLayout --no-build -outDir "/Users/pav/experiments/aeb/dotnet-web/Pages/Clients" --namespaceName dotnetweb.Pages.Clients
+
+    dotnet aspnet-codegenerator --configuration "Debug" --project "/Users/pav/experiments/aeb/dotnet-web/dotnet-web.csproj" razorpage --model Order --dataContext SqlServerDbContext  --referenceScriptLibraries  --useDefaultLayout --no-build -outDir "/Users/pav/experiments/aeb/dotnet-web/Pages/Orders" --namespaceName dotnetweb.Pages.Orders --force 
+
+Razor Pages генерятся. Есть какая-то валидация, не дает пустые поля. С клиентами: в поле по умолчанию для выбора даты какая-то проблема с верт выравниванием, зато есть выпадающий календарь. С заказами: на странице списка заказов и на странице Details для enuma status показывает нормально в списке ToDo/ InProgress/ Done, но на странице редактирования в форме в поле выбора пусто и ничего выбрать невозможно. Самое странное, что в cписке Client, в форме редактирования ClientId, и в обоих отображется, внезапно, ИНН. Надо, видимо, как-то указывать дефолтное представление для entity, типа `class.__str__` в питоне.
+

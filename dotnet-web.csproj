@@ -7,6 +7,7 @@
   <PropertyGroup Condition=" '$(RunConfiguration)' == 'dotnet_web' " />
   <ItemGroup>
     <Folder Include="wwwroot\" />
+    <Folder Include="Pages\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -19,6 +20,14 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="2.1.14" />
+    <PackageReference Include="Microsoft.AspNetCore.Razor" Version="2.1.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.RazorPages" Version="2.1.11" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.10" />
+    <PackageReference Include="Microsoft.AspNetCore" Version="2.1.7" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.1.3" />
+    <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="2.1.1" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink" Version="2.1.1" />
   </ItemGroup>
 
   <ItemGroup>
@@ -26,6 +35,18 @@
     <None Remove="Microsoft.EntityFrameworkCore.SqlServer" />
     <None Remove="Microsoft.EntityFrameworkCore.Tools" />
     <None Remove="Microsoft.EntityFrameworkCore.Design" />
+    <None Remove="Microsoft.AspNetCore.Razor" />
+    <None Remove="Microsoft.AspNetCore.Mvc.RazorPages" />
+    <None Remove="Microsoft.AspNetCore.Mvc.Razor.Extensions" />
+    <None Remove="Pages\" />
+    <None Remove="Microsoft.VisualStudio.Web.CodeGeneration.Design" />
+    <None Remove="Microsoft.AspNetCore" />
+    <None Remove="Microsoft.AspNetCore.Mvc" />
+    <None Remove="Microsoft.AspNetCore.StaticFiles" />
+    <None Remove="Microsoft.Extensions.Logging.Debug" />
+    <None Remove="Microsoft.VisualStudio.Web.BrowserLink" />
+    <None Remove="Microsoft.EntityFrameworkCore.Sqlite" />
+    <None Remove="Pages\Client\" />
   </ItemGroup>
   <ItemGroup>
     <Content Remove="appsettings.json" />

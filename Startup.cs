@@ -47,6 +47,7 @@ namespace dotnet_web
             }
 
             app.UseHttpsRedirection();
+            app.UseStaticFiles();
             app.UseMvc();
         }
     }
