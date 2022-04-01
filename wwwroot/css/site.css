@@ -35,3 +35,22 @@ body {
         display: none;
     }
 }
+
+.edit-icon {
+    color: rgb(96, 125, 139)!important;
+    margin-right: 1.2em;
+}
+
+.edit-icon:hover {
+    color: rgb(35, 82, 124)!important;
+}
+
+.delete-icon {
+    color: rgb(80, 60, 58)!important;
+}
+
+.delete-icon:hover {
+    color: rgb(169, 68, 66)!important;
+
+}
+

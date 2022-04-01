@@ -10,6 +10,7 @@ using dotnet_web.Models;
 
 namespace dotnetweb.Pages.Orders
 {
+
     public class EditModel : PageModel
     {
         private readonly dotnet_web.Models.SqlServerDbContext _context;
@@ -36,7 +37,12 @@ namespace dotnetweb.Pages.Orders
             {
                 return NotFound();
             }
-           ViewData["ClientId"] = new SelectList(_context.Clients, "Id", "Inn");
+            ViewData["ClientId"] = new SelectList(_context.Clients, "Id", "Name");
+            ViewData["Status"] = new SelectList(
+                from v in Enum.GetValues(typeof(Status)).Cast<Status>()
+                select new SelectListItem(((int)(v)).ToString(), v.ToString()),
+                "Text", "Value"
+            ); 
             return Page();
         }
 

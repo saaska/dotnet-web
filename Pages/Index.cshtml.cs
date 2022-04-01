@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using dotnet_web.Models;
 
-namespace dotnetweb.Pages.Orders
+namespace dotnetweb.Pages
 {
     public class IndexModel : PageModel
     {
