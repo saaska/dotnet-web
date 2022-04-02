@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Globalization;
+using Bogus;
 
 namespace dotnet_web.Models
 {
@@ -14,6 +15,7 @@ namespace dotnet_web.Models
     {
         private List<Order> orders;
 
+        [DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
         [MaxLength(100)]
@@ -44,6 +46,7 @@ namespace dotnet_web.Models
 
     public class Order
     {
+        [DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
         [MaxLength(100)]
@@ -71,79 +74,62 @@ namespace dotnet_web.Models
         {
         }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlServer("name=ConnectionStrings:SQLServerDocker");
-        }
-
         public DbSet<Client> Clients { get; set; }
         public DbSet<Order> Orders { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            GregorianCalendar gc = new GregorianCalendar();
-            modelBuilder.Entity<Client>().HasData(
-                new Client()
+            // родить столько клиентов...
+            const int clientCount = 1000;
+
+            // каждый из которых имеет одно из таких вариантов количества заказов
+            var orderCounts = new int[] { 0, 1, 3, 4, 5, 8, 14, 55 };
+
+            Faker f = new Faker();
+            Randomizer.Seed = new Random(42);
+
+            List<Client> BogusClients = new List<Client>();
+            List<Order> BogusOrders = new List<Order>();
+
+            int totalOrders = 0;
+            for (int i = 0; i < clientCount; i++)
+            {
+                String digit10 = new Randomizer().Replace("##########"),
+                       digit12 = new Randomizer().Replace("############"),
+                       companyName = f.Company.CompanyName(),
+                       personName = f.Name.FullName();
+
+                bool isPerson = f.Random.Bool();
+
+                var client = new Client
                 {
-                    Id = 1,
-                    Name = "Поликарп Петров",
-                    BirthDate = new DateTime(1970, 1, 13, gc),
-                    Inn = "140123456789",
-                    PhoneNumber = "+79245551122"
-                },
-                new Client()
+                    Id = i + 1,
+                    Name = isPerson ? personName : companyName,
+                    BirthDate = f.Date.Between(new DateTime(1920, 1, 1, 0, 0, 0),
+                                                new DateTime(2000, 1, 1, 0, 0, 0)),
+                    Email = f.Internet.Email(),
+                    Inn = isPerson ? digit12 : digit10,
+                    PhoneNumber = f.Phone.PhoneNumberFormat()
+                };
+                BogusClients.Add(client);
+
+                var howManyOrders = f.PickRandom<int>(orderCounts);
+                for (int j = 0; j < howManyOrders; j++)
                 {
-                    Id = 2,
-                    Name = "Юникс Мультиксович Линукс",
-                    BirthDate = new DateTime(1970, 1, 1, gc),
-                    Inn = "1234567890",
-                    PhoneNumber = "+14151234567",
-                    Email = "nokia@bell-labs.com"
-                },
-                new Client()
-                {
-                    Id = 3,
-                    Name = "Шерлок Холмс",
-                    BirthDate = new DateTime(1854, 1, 6, gc),
-                    Inn = "1234567890",
-                    PhoneNumber = "+4402072243688",
-                    Email = "sherlock@holmes.co.uk"
+                    BogusOrders.Add(new Order()
+                    {
+                        Id = totalOrders + 1,
+                        ClientId = i,
+                        Name = f.Commerce.ProductName(),
+                        CreatedOn = f.Date.Recent(),
+                        Status = f.PickRandom<Status>(Status.InProgress, Status.Done, Status.ToDo)
+                    });
+                    totalOrders++;
                 }
-            );
-            modelBuilder.Entity<Order>().HasData(
-                new Order()
-                {
-                    Id = 1,
-                    Name = "Драконьи шкуры",
-                    CreatedOn = new DateTime(2022, 3, 30, 17, 53, 0),
-                    ClientId = 1,
-                    Status = Status.Done
-                },
-                new Order()
-                {
-                    Id = 2,
-                    Name = "Автозапчасти",
-                    CreatedOn = new DateTime(2022, 3, 31, 10, 0, 0),
-                    ClientId = 1,
-                    Status = Status.InProgress
-                },
-                new Order()
-                {
-                    Id = 3,
-                    Name = "8\" Inch Floppy Disks",
-                    CreatedOn = new DateTime(2021, 2, 1, 10, 05, 34),
-                    ClientId = 2,
-                    Status = Status.ToDo
-                },
-                new Order()
-                {
-                    Id = 4,
-                    Name = "Bell Labs Technical Reports 1970-1974",
-                    CreatedOn = new DateTime(2019, 12, 31, 18, 30, 0),
-                    ClientId = 2,
-                    Status = Status.ToDo
-                }
-            );
+            }
+
+            modelBuilder.Entity<Client>().HasData(BogusClients.ToArray());
+            modelBuilder.Entity<Order>().HasData(BogusOrders.ToArray());
         }
     }
 }
