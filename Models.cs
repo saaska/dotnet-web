@@ -92,23 +92,26 @@ namespace dotnet_web.Models
             List<Order> BogusOrders = new List<Order>();
 
             int totalOrders = 0;
+            DateTime person_t0 = new DateTime(1920, 1, 1, 0, 0, 0),
+                     person_t1 = new DateTime(2000, 12, 31, 0, 0, 0),
+                     company_t0 = new DateTime(1720, 1, 1, 0, 0, 0),
+                     company_t1 = new DateTime(2022, 1, 1, 0, 0, 0);
+
             for (int i = 0; i < clientCount; i++)
             {
-                String digit10 = new Randomizer().Replace("##########"),
-                       digit12 = new Randomizer().Replace("############"),
-                       companyName = f.Company.CompanyName(),
-                       personName = f.Name.FullName();
-
                 bool isPerson = f.Random.Bool();
-
+                String name = isPerson ? f.Name.FullName() : f.Company.CompanyName(),
+                       inn  = isPerson ? new Randomizer().Replace("############") :
+                                         new Randomizer().Replace("##########");
+                DateTime bd = isPerson ? f.Date.Between(person_t0, person_t1) :
+                                         f.Date.Between(person_t0, person_t1);
                 var client = new Client
                 {
                     Id = i + 1,
-                    Name = isPerson ? personName : companyName,
-                    BirthDate = f.Date.Between(new DateTime(1920, 1, 1, 0, 0, 0),
-                                                new DateTime(2000, 1, 1, 0, 0, 0)),
+                    Name = name,
+                    BirthDate = bd,
                     Email = f.Internet.Email(),
-                    Inn = isPerson ? digit12 : digit10,
+                    Inn = inn,
                     PhoneNumber = f.Phone.PhoneNumberFormat()
                 };
                 BogusClients.Add(client);
@@ -116,12 +119,14 @@ namespace dotnet_web.Models
                 var howManyOrders = f.PickRandom<int>(orderCounts);
                 for (int j = 0; j < howManyOrders; j++)
                 {
+                    DateTime dt = f.Date.Recent();
+                    dt = dt.AddMilliseconds(-dt.Millisecond);
                     BogusOrders.Add(new Order()
                     {
                         Id = totalOrders + 1,
-                        ClientId = i,
+                        ClientId = i + 1,
                         Name = f.Commerce.ProductName(),
-                        CreatedOn = f.Date.Recent(),
+                        CreatedOn = dt,
                         Status = f.PickRandom<Status>(Status.InProgress, Status.Done, Status.ToDo)
                     });
                     totalOrders++;
