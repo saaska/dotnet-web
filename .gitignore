@@ -1,7 +1,5 @@
 db/
-appsettings.json
-appsettings.Development.json
-run-sqlserver-docker.sh
+Migrations/
 
 # https://github.com/github/gitignore/blob/main/community/DotNet/core.gitignore, licensed under CC0
 *.swp
