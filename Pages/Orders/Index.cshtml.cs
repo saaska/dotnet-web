@@ -18,12 +18,19 @@ namespace dotnetweb.Pages.Orders
             _context = context;
         }
 
-        public IList<Order> Order { get;set; }
+        public IList<OrderDto> Order { get;set; }
 
         public async Task OnGetAsync()
         {
             Order = await _context.Orders
-                .Include(o => o.Client).ToListAsync();
+                .Select(o => new OrderDto
+                {
+                    Id = o.Id,
+                    Name = o.Name,
+                    CreatedOn = o.CreatedOn,
+                    Status = o.Status,
+                    ClientName = o.Client.Name
+                }).ToListAsync();
         }
     }
 }

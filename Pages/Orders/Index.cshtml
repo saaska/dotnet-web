@@ -23,7 +23,7 @@
                 @Html.DisplayNameFor(model => model.Order[0].Status)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Order[0].Client)
+                @Html.DisplayNameFor(model => model.Order[0].ClientName)
             </th>
             <th></th>
         </tr>
@@ -43,7 +43,7 @@
                      @Html.DisplayFor(modelItem => item.Status)
                  </td>
                  <td>
-                     @Html.DisplayFor(modelItem => item.Client.Name)
+                     @Html.DisplayFor(modelItem => item.ClientName)
                  </td>
                  <td class="text-right">
                      <a asp-page="./Edit" class="edit-icon" asp-route-id="@item.Id" aria-label="Edit">

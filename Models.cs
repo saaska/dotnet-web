@@ -69,7 +69,25 @@ namespace dotnet_web.Models
         [ForeignKey("ClientId")]
         public Client Client { get; set; }
     }
-    
+
+    public class OrderDto
+    {
+        public int Id { get; set; }
+
+        [MaxLength(100)]
+        [Required]
+        public string Name { get; set; }
+
+        [Display(Name = "Created On")]
+        [Required]
+        public DateTime CreatedOn { get; set; }
+
+        [Required]
+        public Status Status { get; set; }
+
+        [Display(Name = "Client")]
+        public string ClientName { get; set; }
+    }
 
     public class SqlServerDbContext : DbContext
     {
