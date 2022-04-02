@@ -20,7 +20,12 @@ namespace dotnetweb.Pages.Orders
 
         public IActionResult OnGet()
         {
-        ViewData["ClientId"] = new SelectList(_context.Clients, "Id", "Inn");
+            ViewData["ClientId"] = new SelectList(_context.Clients, "Id", "Name");
+            ViewData["Status"] = new SelectList(
+                from v in Enum.GetValues(typeof(Status)).Cast<Status>()
+                select new SelectListItem(((int)(v)).ToString(), v.ToString()),
+                "Text", "Value"
+            ); 
             return Page();
         }
 

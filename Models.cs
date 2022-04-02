@@ -24,6 +24,7 @@ namespace dotnet_web.Models
 
         [Display(Name = "Date of Birth")]
         [Column(TypeName = "Date")]
+        [DataType(DataType.Date)]
         [Required]
         public DateTime BirthDate { get; set; }
 
@@ -33,6 +34,8 @@ namespace dotnet_web.Models
         public string Inn { get; set; }
         
         [Display(Name = "Phone Number")]
+        [DataType(DataType.PhoneNumber)]
+        [MinLength(6)]
         [MaxLength(14)]
         [Required]
         public string PhoneNumber { get; set; }
@@ -60,6 +63,7 @@ namespace dotnet_web.Models
         [Required]
         public Status Status { get; set; }
 
+        [Display(Name = "Client")]
         public int ClientId { get; set; }
 
         [ForeignKey("ClientId")]
@@ -79,6 +83,10 @@ namespace dotnet_web.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Order>()
+                .Property(order => order.CreatedOn)
+                .HasDefaultValueSql("CONVERT(datetime2(0),GETDATE())");
+
             // родить столько клиентов...
             const int clientCount = 1000;
 
@@ -104,7 +112,7 @@ namespace dotnet_web.Models
                        inn  = isPerson ? new Randomizer().Replace("############") :
                                          new Randomizer().Replace("##########");
                 DateTime bd = isPerson ? f.Date.Between(person_t0, person_t1) :
-                                         f.Date.Between(person_t0, person_t1);
+                                         f.Date.Between(company_t0, company_t1);
                 var client = new Client
                 {
                     Id = i + 1,
