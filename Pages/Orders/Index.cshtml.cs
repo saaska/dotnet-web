@@ -19,9 +19,17 @@ namespace dotnetweb.Pages.Orders
         }
 
         public IList<OrderDto> Order { get;set; }
+        public int totalRecords { get; set; }
+        public int pageNo { get; set; }
+        public int pageSize { get; set; }
 
-        public async Task OnGetAsync()
+        public async Task OnGetAsync(int p=1, int psize=20)
         {
+            pageNo = p;
+            pageSize = psize;
+            totalRecords = (from o in _context.Orders select o).Count();
+            Console.Write($"\n\n Skip {pageSize * (pageNo-1)} ********************\n\n");
+
             Order = await _context.Orders
                 .Select(o => new OrderDto
                 {
@@ -30,7 +38,7 @@ namespace dotnetweb.Pages.Orders
                     CreatedOn = o.CreatedOn,
                     Status = o.Status,
                     ClientName = o.Client.Name
-                }).ToListAsync();
+                }).Skip(pageSize * (pageNo-1)).Take(pageSize).ToListAsync();
         }
     }
 }

@@ -29,6 +29,7 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="2.1.1" />
     <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink" Version="2.1.1" />
     <PackageReference Include="Bogus" Version="34.0.2" />
+    <PackageReference Include="LazZiya.TagHelpers" Version="2.1.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -48,6 +49,7 @@
     <None Remove="Microsoft.VisualStudio.Web.BrowserLink" />
     <None Remove="Microsoft.EntityFrameworkCore.Sqlite" />
     <None Remove="Pages\Client\" />
+    <None Remove="LazZiya.TagHelpers" />
   </ItemGroup>
   <ItemGroup>
     <Content Remove="appsettings.json" />
