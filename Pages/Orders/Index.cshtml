@@ -104,4 +104,7 @@
 <paging class="pagination"
         page-no="Convert.ToInt32(@ViewData["PageNo"])"
         page-size="Convert.ToInt32(@ViewData["PageSize"])"
-        total-records="Convert.ToInt32(@ViewData["FilteredRecords"])"></paging>
+        total-records="Convert.ToInt32(@ViewData["FilteredRecords"])"
+        show-total-pages="true" show-total-records="false"
+        query-string-key-page-no="p" query-string-key-page-size="pSize"
+        query-string-value="sortBy=@ViewData["SortBy"]&q=@ViewData["Q"]"></paging>

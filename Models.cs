@@ -13,8 +13,6 @@ namespace dotnet_web.Models
 
     public class Client
     {
-        private List<Order> orders;
-
         [DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 

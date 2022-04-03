@@ -56,7 +56,7 @@ namespace dotnetweb.Pages.Orders
             if (lastPage == 0) lastPage = 1;
             p = Math.Clamp(p, 1, lastPage);
 
-            // отбираем из Dto с ограничением страницы
+            // отбираем из Dto по размеру страницы
             Order = await orders.Select(o => new OrderDto
                 {
                     Id = o.Id,
