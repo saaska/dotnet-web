@@ -43,7 +43,7 @@ namespace dotnet_web.Models
         [MaxLength(60)]
         public string Email { get; set; }
 
-        public IList<Order> Orders { get; } = new List<Order>();
+        virtual public IList<Order> Orders { get; } = new List<Order>();
     }
 
 
@@ -101,9 +101,21 @@ namespace dotnet_web.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            // Автозаполнению текущего времени в заказе
             modelBuilder.Entity<Order>()
                 .Property(order => order.CreatedOn)
                 .HasDefaultValueSql("CONVERT(datetime2(0),GETDATE())");
+
+            // Индексы
+            modelBuilder.Entity<Client>()
+                .HasIndex(client => new { client.Name, client.Id });
+            modelBuilder.Entity<Order>()
+                .HasIndex(order => new { order.Name, order.Id });
+            modelBuilder.Entity<Order>()
+                .HasIndex(order => new { order.CreatedOn, order.Id });
+            modelBuilder.Entity<Order>()
+                .HasIndex(order => new { order.ClientId, order.CreatedOn, order.Id });
+
 
             // родить столько клиентов...
             const int clientCount = 1000;
