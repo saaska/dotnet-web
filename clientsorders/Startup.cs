@@ -31,14 +31,14 @@ namespace ClientsOrders
         {
             services.AddLogging();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-            var dbpass = Environment.GetEnvironmentVariable("DBPASS");
-            if (dbpass == null)
+            var dbconn = Environment.GetEnvironmentVariable("DBCONN");
+            if (dbconn == null)
             {
-                Console.WriteLine("ERROR: Set database password in the DBPASS environment variable.");
+                Console.WriteLine("ERROR: Set database connection string in the DBCONN environment variable. Do not use database name, BACKEND will be used.");
                 Environment.Exit(1);
             }
             services.AddDbContext<SqlServerDbContext>(
-                opt => opt.UseSqlServer("Server=127.0.0.1,54321;Database=backend;User Id=sa;Password=" + dbpass));
+                opt => opt.UseSqlServer(dbconn + (dbconn.TrimEnd().EndsWith(';') ? "" : ";") + "Database={DATABASE_NAME}"));
             services.AddSwaggerGen(c => {
                 c.SwaggerDoc("v1",
                     new Info {

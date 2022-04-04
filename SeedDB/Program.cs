@@ -106,24 +106,24 @@ namespace SeedDB
 
         public static void Main(string[] args)
         {
-            var dbpass = Environment.GetEnvironmentVariable("DBPASS");
-            if (dbpass == null)
+            var dbconn = Environment.GetEnvironmentVariable("DBCONN");
+            if (dbconn == null)
             {
-                Console.WriteLine("ERROR: Set database password in the DBPASS environment variable.");
+                Console.WriteLine("ERROR: Set database connection string in the DBCONN environment variable. Do not use database name, BACKEND will be used.");
                 Environment.Exit(1);
             }
 
             var dbCtx = new DbContext(
                 new DbContextOptionsBuilder<DbContext>()
-                .UseSqlServer($"Server=127.0.0.1,54321;User Id=sa;Password={dbpass}")
+                .UseSqlServer(dbconn)
                 .Options
             );
-            dbCtx.Database.ExecuteSqlCommand("DROP DATABASE IF EXISTS backend;"+
+            dbCtx.Database.ExecuteSqlCommand($"DROP DATABASE IF EXISTS {DATABASE_NAME}; "+
                 $"CREATE DATABASE {DATABASE_NAME} COLLATE Yakut_100_CI_AS_SC_UTF8;");
 
             var seedingCtx = new DataSeedingContext(
                 new DbContextOptionsBuilder<DataSeedingContext>()
-                .UseSqlServer($"Server=127.0.0.1,54321;User Id=sa;Password={dbpass};Database={DATABASE_NAME}")
+                .UseSqlServer(dbconn + (dbconn.TrimEnd().EndsWith(';') ? "" : ";") + $"Database={DATABASE_NAME}")
                 .Options
             );
 
