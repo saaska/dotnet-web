@@ -28,8 +28,11 @@
     <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.1.1" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="2.1.1" />
     <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink" Version="2.1.1" />
-    <PackageReference Include="Bogus" Version="34.0.2" />
     <PackageReference Include="LazZiya.TagHelpers" Version="2.1.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="2.1.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="2.1.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="2.1.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="2.1.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -50,6 +53,9 @@
     <None Remove="Microsoft.EntityFrameworkCore.Sqlite" />
     <None Remove="Pages\Client\" />
     <None Remove="LazZiya.TagHelpers" />
+    <None Remove="Swashbuckle.AspNetCore.Swagger" />
+    <None Remove="Swashbuckle.AspNetCore.SwaggerGen" />
+    <None Remove="Swashbuckle.AspNetCore.SwaggerUI" />
   </ItemGroup>
   <ItemGroup>
     <Content Remove="appsettings.json" />

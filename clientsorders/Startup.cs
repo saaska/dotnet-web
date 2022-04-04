@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.EntityFrameworkCore;
+using Swashbuckle.AspNetCore.Swagger;
 
 using ClientsOrders.Models;
 
@@ -38,6 +39,14 @@ namespace ClientsOrders
             }
             services.AddDbContext<SqlServerDbContext>(
                 opt => opt.UseSqlServer("Server=127.0.0.1,1433;Database=backend;User Id=sa;Password=" + dbpass));
+            services.AddSwaggerGen(c => {
+                c.SwaggerDoc("v1",
+                    new Info {
+                        Title = "Clients and Orders API",
+                        Version = "v1",
+                        Description = "Простой экспорт ASP.NET Core Web API в Swagger",
+                    });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -46,6 +55,11 @@ namespace ClientsOrders
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseSwagger();
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Clients and Orders API V1");
+                });
             }
             else
             {
