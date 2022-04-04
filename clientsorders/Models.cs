@@ -96,6 +96,26 @@ namespace ClientsOrders.Models
         {
         }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            // Автозаполнению текущего времени в заказе
+            modelBuilder.Entity<Order>()
+                .Property(order => order.CreatedOn)
+                .HasDefaultValueSql("CONVERT(datetime2(0),GETDATE())");
+
+            // Индексы
+            modelBuilder.Entity<Client>()
+                .HasIndex(client => new { client.Name, client.Id });
+            modelBuilder.Entity<Order>()
+                .HasIndex(order => new { order.Name, order.Id });
+            modelBuilder.Entity<Order>()
+                .HasIndex(order => new { order.CreatedOn, order.Id });
+            modelBuilder.Entity<Order>()
+                .HasIndex(order => new { order.ClientId, order.CreatedOn, order.Id });
+            modelBuilder.Entity<Order>()
+                .HasIndex(order => new { order.ClientId, order.Name, order.Id });
+            }
+
         public DbSet<Client> Clients { get; set; }
         public DbSet<Order> Orders { get; set; }
     }

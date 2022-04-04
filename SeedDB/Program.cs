@@ -37,6 +37,8 @@ namespace SeedDB
                     .HasIndex(order => new { order.CreatedOn, order.Id });
                 modelBuilder.Entity<Order>()
                     .HasIndex(order => new { order.ClientId, order.CreatedOn, order.Id });
+                modelBuilder.Entity<Order>()
+                    .HasIndex(order => new { order.ClientId, order.Name, order.Id });
 
 
                 // родить столько клиентов...
