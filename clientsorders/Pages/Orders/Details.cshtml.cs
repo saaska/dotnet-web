@@ -20,7 +20,7 @@ namespace ClientsOrders.Pages.Orders
 
         public Order Order { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(int? id)
+        public async Task<IActionResult> OnGetAsync(int? id, string retPath="")
         {
             if (id == null)
             {
@@ -34,6 +34,11 @@ namespace ClientsOrders.Pages.Orders
             {
                 return NotFound();
             }
+
+            ViewData["RetPath"] = (retPath != "" && Url.IsLocalUrl(retPath)) ?
+                       retPath : "./Index";
+
+
             return Page();
         }
     }

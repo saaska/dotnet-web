@@ -1,14 +1,21 @@
 @page
 @model ClientsOrders.Pages.Clients.DetailsModel
 
-@{
-    ViewData["Title"] = "Details";
+@{ 
+    ViewData["Title"] = "Client Details"; 
+    string ThisPagePath = Request.Path + Request.QueryString;
 }
 
-<h2>Details</h2>
+<h2>@ViewData["Title"]</h2>
 
 <div>
-    <h4>Client</h4>
+    <h4>Client
+        <a asp-page="./Edit" asp-route-id="@Model.Client.Id" aria-label="Edit">
+          <span class="glyphicon glyphicon-pencil edit-icon" aria-hidden="true" style="margin-left: 1em;"></span></a>
+
+        <a asp-page="./Delete" asp-route-id="@Model.Client.Id" aria-label="Delete">
+            <span class="glyphicon glyphicon-trash delete-icon" aria-hidden="true"></span></a>        
+    </h4>
     <hr />
     <dl class="dl-horizontal">
         <dt>
@@ -43,7 +50,16 @@
         </dd>
     </dl>
 </div>
-<div>
-    <a asp-page="./Edit" asp-route-id="@Model.Client.Id">Edit</a> |
-    <a asp-page="./Index">Back to List</a>
-</div>
+
+<h4>Orders for 
+@Model.Client.Name 
+<span class="badge badge">@ViewBag.TotalRecords total</span>
+<a asp-page="../Orders/Create" asp-route-ClientId="@Model.Client.Id" asp-route-retPath=@ThisPagePath>
+<span class="btn btn-success btn-sm"><span class="glyphicon glyphicon-plus"></span> <b>Add</b></span></a>
+</h4>
+
+<hr />
+
+@{
+    await Html.RenderPartialAsync("OrdersPartial");
+}

@@ -1,27 +1,27 @@
 @page
 @model ClientsOrders.Pages.Clients.IndexModel
 
-@{ ViewData["Title"] = "Clients"; }
+@{ ViewBag.Title = "Clients"; }
 
 <h2>
-    @ViewData["Title"] <span class="badge badge">@ViewData["TotalRecords"] total</span>
-    <a asp-page="Create"><span class="badge" style="background-color: green"><b>+</b></span></a>
+    @ViewBag.Title <span class="badge badge">@ViewBag.TotalRecords total</span>
+    <a asp-page="Create"><span class="badge" style="background-color: green"><b>+ Add</b></span></a>
 </h2>
 
 <form asp-action="Index" method="get">
     <p>
-        Search: <input type="text" name="q" value="@ViewData["Q"]" />
-        <input type="submit" value="Search" class="btn btn-default" />
+        Search: <input type="text" name="q" value="@ViewBag.Q" />
+        <input type="submit" value="Search" class="btn btn-default btn-sm" />
     </p>
 </form>
 
-<p>@ViewData["LocationMsg"]
+<p>@ViewBag.LocationMsg
 @{
-    if (ViewData["Q"].ToString() != "")
+    if (ViewBag.Q.ToString() != "")
     {
         <span> | </span>
-        <a asp-page="Index" asp-route-sortBy="@ViewData["SortBy"]"
-            asp-route-pSize="@ViewData["PageSize"]" asp-route-p="1" asp-route-q="">
+        <a asp-page="Index" asp-route-sortBy="@ViewBag.SortBy"
+            asp-route-pSize="@ViewBag.PageSize" asp-route-p="1" asp-route-q="">
             Back to Full List
         </a>
     }
@@ -32,15 +32,15 @@
     <thead>
         <tr>
             <th>
-                <a asp-page="Index" asp-route-sortBy="@ViewData["NameSortLink"]" asp-route-Q="@ViewData["Q"]">
+                <a asp-page="Index" asp-route-sortBy="@ViewBag.NameSortLink" asp-route-Q="@ViewBag.Q">
                     @Html.DisplayNameFor(model => model.Client[0].Name)
                 </a>
                 @{ 
-                    if (ViewData["SortBy"].ToString() == "Name")
+                    if (ViewBag.SortBy.ToString() == "Name")
                     {
                         <span class="glyphicon glyphicon-triangle-top" aria-hidden="true"></span> 
                     }
-                    if (ViewData["SortBy"].ToString() == "Name_desc")
+                    if (ViewBag.SortBy.ToString() == "Name_desc")
                     {
                         <span class="glyphicon glyphicon-triangle-bottom" aria-hidden="true"></span> 
                     } 
@@ -61,7 +61,8 @@
         </tr>
     </thead>
     <tbody>
-       @foreach (var item in Model.Client) {
+       @foreach (var item in Model.Client) 
+       {
             <tr>
                 <td>
                     <a asp-page="./Details" asp-route-id="@item.Id">
@@ -81,11 +82,11 @@
                     @Html.DisplayFor(modelItem => item.Email)
                 </td>
                 <td class="text-right">
-                    <a asp-page="./Edit" class="edit-icon" asp-route-id="@item.Id" aria-label="Edit">
-                        <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+                    <a asp-page="./Edit" asp-route-id="@item.Id" aria-label="Edit">
+                        <span class="glyphicon glyphicon-pencil edit-icon" aria-hidden="true"></span>
                     </a>
-                    <a asp-page="./Delete" class="delete-icon" asp-route-id="@item.Id" aria-label="Delete">
-                        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                    <a asp-page="./Delete" asp-route-id="@item.Id" aria-label="Delete">
+                        <span class="glyphicon glyphicon-trash delete-icon" aria-hidden="true"></span>
                     </a>
                 </td>
             </tr>
@@ -93,11 +94,16 @@
     </tbody>
 </table>
 
-<paging class="pagination"
-        page-no="Convert.ToInt32(@ViewData["PageNo"])"
-        page-size="Convert.ToInt32(@ViewData["PageSize"])"
-        total-records="Convert.ToInt32(@ViewData["FilteredRecords"])"
+@{
+    if ((int)ViewBag.FilteredRecords > (int)ViewBag.PageSize)
+    {
+        <paging class="pagination"
+        page-no="Convert.ToInt32(@ViewBag.PageNo)"
+        page-size="Convert.ToInt32(@ViewBag.PageSize)"
+        total-records="Convert.ToInt32(@ViewBag.FilteredRecords)"
         show-total-pages="true" show-total-records="false"
         query-string-key-page-no="p" query-string-key-page-size="pSize"
-        query-string-value="sortBy=@ViewData["SortBy"]&q=@ViewData["Q"]"></paging>
+        query-string-value="sortBy=@ViewBag.SortBy&q=@ViewBag.Q"></paging>
+    }
+}
 

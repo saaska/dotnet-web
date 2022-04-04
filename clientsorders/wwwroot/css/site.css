@@ -38,7 +38,7 @@ body {
 
 .edit-icon {
     color: rgb(96, 125, 139)!important;
-    margin-right: 1.2em;
+    margin-right: 1em;
 }
 
 .edit-icon:hover {
@@ -46,11 +46,18 @@ body {
 }
 
 .delete-icon {
-    color: rgb(80, 60, 58)!important;
+    color: rgb(104, 47, 43)!important;
 }
 
 .delete-icon:hover {
     color: rgb(169, 68, 66)!important;
-
 }
 
+.btn-sm {
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+
+form > p > input[type="text"] {
+    vertical-align: middle;
+}

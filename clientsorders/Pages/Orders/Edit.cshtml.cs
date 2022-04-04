@@ -16,14 +16,12 @@ namespace ClientsOrders.Pages.Orders
         private readonly ClientsOrders.Models.SqlServerDbContext _context;
 
         public EditModel(ClientsOrders.Models.SqlServerDbContext context)
-        {
-            _context = context;
-        }
+            => _context = context;
 
         [BindProperty]
         public Order Order { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(int? id)
+        public async Task<IActionResult> OnGetAsync(int? id, string retPath="")
         {
             if (id == null)
             {
@@ -37,16 +35,22 @@ namespace ClientsOrders.Pages.Orders
             {
                 return NotFound();
             }
-            ViewData["ClientId"] = new SelectList(_context.Clients, "Id", "Name");
+            
+            ViewData["ClientSelect"] = new SelectList(_context.Clients, "Id", "Name");
+
             ViewData["Status"] = new SelectList(
                 from v in Enum.GetValues(typeof(Status)).Cast<Status>()
                 select new SelectListItem(((int)(v)).ToString(), v.ToString()),
                 "Text", "Value"
-            ); 
+            );
+
+            ViewData["RetPath"] = (retPath != "" && Url.IsLocalUrl(retPath)) ?
+                                   retPath : "./Index";
+
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(string retPath="")
         {
             if (!ModelState.IsValid)
             {
@@ -71,7 +75,8 @@ namespace ClientsOrders.Pages.Orders
                 }
             }
 
-            return RedirectToPage("./Index");
+            return LocalRedirect((retPath != "" && Url.IsLocalUrl(retPath)) ?
+                                 retPath : "./Index");
         }
 
         private bool OrderExists(int id)

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using ClientsOrders.Models;
+using ClientsOrders.Pages.Orders;
 
 namespace ClientsOrders.Pages.Clients
 {
@@ -13,26 +14,25 @@ namespace ClientsOrders.Pages.Clients
     {
         private readonly ClientsOrders.Models.SqlServerDbContext _context;
 
-        public DetailsModel(ClientsOrders.Models.SqlServerDbContext context)
-        {
-            _context = context;
-        }
+        public DetailsModel(ClientsOrders.Models.SqlServerDbContext context) => _context = context;
 
         public Client Client { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(int? id)
+        public IList<OrderDto> Orders { get; set; }
+
+        public async Task<IActionResult> OnGetAsync(
+            int? id, int p=1, int pSize=20, string sortBy="", string q="")
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
+            if (id == null) return NotFound();
             Client = await _context.Clients.FirstOrDefaultAsync(m => m.Id == id);
+            if (Client == null) return NotFound();
+            ViewData["Client"] = Client;
+            ViewData["ClientId"] = Client.Id;
 
-            if (Client == null)
-            {
-                return NotFound();
-            }
+            Orders = await DataSet.Filter(
+                _context, this, id, p, pSize, sortBy, q
+            );
+
             return Page();
         }
     }

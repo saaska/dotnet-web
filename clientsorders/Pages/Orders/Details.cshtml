@@ -2,13 +2,19 @@
 @model ClientsOrders.Pages.Orders.DetailsModel
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Order Details";
 }
 
-<h2>Details</h2>
+<h2>@ViewData["Title"]</h2>
 
 <div>
-    <h4>Order</h4>
+    <h4>Order
+        <a asp-page="./Edit" asp-route-id="@Model.Order.Id" asp-route-retPath=@ViewBag.RetPath aria-label="Edit">
+          <span class="glyphicon glyphicon-pencil edit-icon" aria-hidden="true" style="margin-left: 1em;"></span></a>
+
+        <a asp-page="./Delete" asp-route-id="@Model.Order.Id" asp-route-retPath=@ViewBag.RetPath aria-label="Delete">
+            <span class="glyphicon glyphicon-trash delete-icon" aria-hidden="true"></span></a>
+    </h4>
     <hr />
     <dl class="dl-horizontal">
         <dt>
@@ -16,6 +22,14 @@
         </dt>
         <dd>
             @Html.DisplayFor(model => model.Order.Name)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Order.Client)
+        </dt>
+        <dd>
+            <a asp-page="../Clients/Details" asp-route-id=@Model.Order.Client.Id>
+            @Html.DisplayFor(model => model.Order.Client.Name)
+            </a>
         </dd>
         <dt>
             @Html.DisplayNameFor(model => model.Order.CreatedOn)
@@ -29,15 +43,9 @@
         <dd>
             @Html.DisplayFor(model => model.Order.Status)
         </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Order.Client)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Order.Client.Name)
-        </dd>
     </dl>
 </div>
+
 <div>
-    <a asp-page="./Edit" asp-route-id="@Model.Order.Id">Edit</a> |
-    <a asp-page="./Index">Back to List</a>
+    <a href="@ViewBag.RetPath">Back to List</a>
 </div>

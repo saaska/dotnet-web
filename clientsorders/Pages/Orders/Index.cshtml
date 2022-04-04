@@ -3,108 +3,11 @@
 
 @{ ViewData["Title"] = "Orders"; }
 
-
 <h2>
     @ViewData["Title"] <span class="badge badge">@ViewData["TotalRecords"] total</span>
-    <a asp-page="Create"><span class="badge" style="background-color: green"><b>+</b></span></a>
+    <a asp-page="Create"><span class="badge" style="background-color: green"><b>+ Add</b></span></a>
 </h2>
 
-<form asp-action="Index" method="get">
-    <p>
-        Search: <input type="text" name="q" value="@ViewData["Q"]" />
-        <input type="submit" value="Search" class="btn btn-default" />
-    </p>
-</form>
-
-<p>@ViewData["LocationMsg"]
 @{
-    if (ViewData["Q"].ToString() != "")
-    {
-        <span> | </span>
-        <a asp-page="Index" asp-route-sortBy="@ViewData["SortBy"]"
-            asp-route-pSize="@ViewData["PageSize"]" asp-route-p="1" asp-route-q="">
-            Back to Full List
-        </a>
-    }
+    await Html.RenderPartialAsync("OrdersPartial");
 }
-</p>
-
-<table class="table table-striped table-hover">
-    <thead>
-        <tr>
-            <th>
-                <a asp-page="Index" asp-route-sortBy="@ViewData["NameSortLink"]" asp-route-Q="@ViewData["Q"]">
-                    @Html.DisplayNameFor(model => model.Order[0].Name)
-                </a>
-                @{ 
-                    if (ViewData["SortBy"].ToString() == "Name")
-                    {
-                        <span class="glyphicon glyphicon-triangle-top" aria-hidden="true"></span> 
-                    }
-                    if (ViewData["SortBy"].ToString() == "Name_desc")
-                    {
-                        <span class="glyphicon glyphicon-triangle-bottom" aria-hidden="true"></span> 
-                    } 
-                }
-            </th>
-            <th>
-                <a asp-page="Index" asp-route-sortBy="@ViewData["CreatedOnSortLink"]" asp-route-Q="@ViewData["Q"]">
-                    @Html.DisplayNameFor(model => model.Order[0].CreatedOn)
-                </a>
-                @{ 
-                    if (ViewData["SortBy"].ToString() == "CreatedOn")
-                    {
-                        <span class="glyphicon glyphicon-triangle-top" aria-hidden="true"></span> 
-                    }
-                    if (ViewData["SortBy"].ToString() == "CreatedOn_desc")
-                    {
-                        <span class="glyphicon glyphicon-triangle-bottom" aria-hidden="true"></span> 
-                    } 
-                }
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Order[0].Status)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Order[0].ClientName)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model.Order)
-        {
-<tr>
-    <td>
-        <a asp-page="./Details" asp-route-id="@item.Id">
-            @Html.DisplayFor(modelItem => item.Name)
-        </a>
-    </td>
-    <td>
-        @Html.DisplayFor(modelItem => item.CreatedOn)
-    </td>
-    <td>
-        @Html.DisplayFor(modelItem => item.Status)
-    </td>
-    <td>
-        @Html.DisplayFor(modelItem => item.ClientName)
-    </td>
-    <td class="text-right">
-        <a asp-page="./Edit" class="edit-icon" asp-route-id="@item.Id" aria-label="Edit">
-            <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
-        </a>
-        <a asp-page="./Delete" class="delete-icon" asp-route-id="@item.Id" aria-label="Delete">
-            <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
-        </a>
-    </td>
-</tr>}
-    </tbody>
-</table>
-
-<paging class="pagination"
-        page-no="Convert.ToInt32(@ViewData["PageNo"])"
-        page-size="Convert.ToInt32(@ViewData["PageSize"])"
-        total-records="Convert.ToInt32(@ViewData["FilteredRecords"])"
-        show-total-pages="true" show-total-records="false"
-        query-string-key-page-no="p" query-string-key-page-size="pSize"
-        query-string-value="sortBy=@ViewData["SortBy"]&q=@ViewData["Q"]"></paging>

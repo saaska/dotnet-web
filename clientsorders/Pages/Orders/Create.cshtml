@@ -7,7 +7,15 @@
 
 <h2>Create</h2>
 
-<h4>Order</h4>
+<h4>
+    Order
+    @{
+        if (Model.Client != null)
+        {
+            <span> from:</span> @Model.Client.Name
+        }
+    }
+</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -23,10 +31,19 @@
                 <select asp-for="Order.Status" class="form-control" asp-items="ViewBag.Status"></select>
                 <span asp-validation-for="Order.Status" class="text-danger"></span>
             </div>
+            @{
+            if (Model.Client == null)
+            {
             <div class="form-group">
                 <label asp-for="Order.ClientId" class="control-label"></label>
-                <select asp-for="Order.ClientId" class="form-control" asp-items="ViewBag.ClientId"></select>
+                <select asp-for="Order.ClientId" class="form-control" asp-items="ViewBag.ClientSelect"></select>
             </div>
+            }
+            else
+            {
+                <input asp-for="Order.ClientId" type="hidden" value="@Model.Client.Id"/>
+            }
+            }
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-default" />
             </div>
@@ -35,7 +52,7 @@
 </div>
 
 <div>
-    <a asp-page="Index">Back to List</a>
+    <a href="@ViewBag.RetPath">Back to List</a>
 </div>
 
 @section Scripts {

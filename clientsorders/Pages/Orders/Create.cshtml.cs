@@ -18,21 +18,34 @@ namespace ClientsOrders.Pages.Orders
             _context = context;
         }
 
-        public IActionResult OnGet()
+        public Client Client;
+
+        public IActionResult OnGet(int? ClientId, string retPath="")
         {
-            ViewData["ClientId"] = new SelectList(_context.Clients, "Id", "Name");
+            if (ClientId != null)
+            {
+                Client = _context.Clients.FirstOrDefault<Client>(c => c.Id == ClientId);
+            } 
+            else
+            {
+                ViewData["ClientSelect"] = new SelectList(_context.Clients, "Id", "Name");
+            }
+
             ViewData["Status"] = new SelectList(
                 from v in Enum.GetValues(typeof(Status)).Cast<Status>()
                 select new SelectListItem(((int)(v)).ToString(), v.ToString()),
                 "Text", "Value"
             ); 
+
+            ViewData["RetPath"] = (retPath != "" && Url.IsLocalUrl(retPath)) ?
+                                   retPath : "./Index";
             return Page();
         }
 
         [BindProperty]
         public Order Order { get; set; }
 
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(string retPath="")
         {
             if (!ModelState.IsValid)
             {
@@ -42,7 +55,8 @@ namespace ClientsOrders.Pages.Orders
             _context.Orders.Add(Order);
             await _context.SaveChangesAsync();
 
-            return RedirectToPage("./Index");
+            return LocalRedirect((retPath != "" && Url.IsLocalUrl(retPath)) ?
+                                 retPath : "./Index");
         }
     }
 }

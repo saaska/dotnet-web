@@ -1,0 +1,126 @@
+@{
+    foreach (var action in new[] { "Edit", "Details", "Delete" })
+    {
+        ViewData[action + "Path"] = (ViewData.ContainsKey("Client") ? "../Orders/" : "./") + action;
+    }
+
+    string ThisPagePath = Context.Request.Path + Context.Request.QueryString;
+
+    <p>  
+        @{
+            if ((int)ViewBag.TotalRecords > 0)
+            {
+                <form method="get">
+                <p>
+                    Search names:
+                    <input type="text" name="q" value="@ViewBag.Q" />
+                    <input type="submit" value="Search" class="btn btn-default btn-sm" />
+                    @{ 
+                        if (ViewData.ContainsKey("Client"))
+                        {
+                            <input type="hidden" name="id" value=@ViewBag.ClientId />
+                        }
+                    }
+                </p>
+                </form>
+            }
+            @ViewBag.LocationMsg
+            if (ViewBag.Q.ToString() != "")
+            {
+                <span> | </span>
+                <a asp-page=@ViewBag.ThisPagePath asp-route-id=@ViewBag.ClientId
+                   asp-route-sortBy=@ViewBag.SortBy asp-route-pSize=@ViewBag.PageSize
+                   asp-route-p="1" asp-route-q="">
+                    Back to Full List
+                </a>
+            }
+        }
+    </p>
+
+    if ((int)ViewBag.FilteredRecords > 0)   
+    {
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>
+                    @{
+                        <a asp-page=@ViewBag.ThisPagePath asp-route-sortBy=@ViewBag.NameSortLink
+                           asp-route-Q=@ViewBag.Q asp-route-id=@ViewBag.ClientId>Name</a>
+                        if (ViewBag.SortBy.ToString() == "Name")
+                        {
+                            <span class="glyphicon glyphicon-triangle-top" aria-hidden="true"></span>
+                        }
+                        if (ViewBag.SortBy.ToString() == "Name_desc")
+                        {
+                            <span class="glyphicon glyphicon-triangle-bottom" aria-hidden="true"></span>
+                        }
+                    }
+                </th>
+                <th>
+                    @{
+                        <a asp-page=@ViewBag.ThisPagePath asp-route-sortBy=@ViewBag.CreatedOnSortLink
+                           asp-route-Q=@ViewBag.Q asp-route-id=@ViewBag.ClientId>Created On</a>
+                        if (ViewBag.SortBy.ToString() == "CreatedOn")
+                        {
+                            <span class="glyphicon glyphicon-triangle-top" aria-hidden="true"></span>
+                        }
+                        if (ViewBag.SortBy.ToString() == "CreatedOn_desc")
+                        {
+                            <span class="glyphicon glyphicon-triangle-bottom" aria-hidden="true"></span>
+                        }
+                    }
+                </th>
+                <th>Status</th>
+                @{ 
+                    if (!ViewData.ContainsKey("Client"))
+                    {
+                        <th>Client</th>
+                    }
+                }
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Orders)
+            {
+                <tr>
+                    <td><a asp-page=@ViewBag.DetailsPath asp-route-id="@item.Id" asp-route-retPath=@ThisPagePath>@item.Name</a></td>
+                    <td>@item.CreatedOn</td>
+                    <td>@item.Status</td>
+                    @{ 
+                        if (!ViewData.ContainsKey("Client"))
+                        {
+                            <td>@item.ClientName</td>
+                        }
+                    }
+                    <td class="text-right">
+                        <a asp-page=@ViewBag.EditPath asp-route-id="@item.Id" asp-route-retPath=@ThisPagePath aria-label="Edit">
+                            <span class="glyphicon glyphicon-pencil edit-icon" aria-hidden="true"></span>
+                        </a>
+                        <a asp-page=@ViewBag.DeletePath asp-route-id="@item.Id" asp-route-retPath=@ThisPagePath aria-label="Delete">
+                            <span class="glyphicon glyphicon-trash delete-icon" aria-hidden="true"></span>
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    if ((int)ViewBag.FilteredRecords > (int)ViewBag.PageSize)
+    {
+        var queryParams = $"sortBy={ViewBag.SortBy}&q={ViewBag.Q}";
+        if (ViewData.ContainsKey("Client"))
+        {
+            queryParams += $"&id={ViewBag.ClientId}";
+        }
+
+        <paging class="pagination"
+                page-no="(int)(@ViewBag.PageNo)"
+                page-size="(int)(@ViewBag.PageSize)"
+                total-records="(int)(@ViewBag.FilteredRecords)"
+                show-total-pages="true" show-total-records="false"
+                query-string-key-page-no="p" query-string-key-page-size="pSize"
+                query-string-value="@queryParams"></paging>
+    }
+    }
+}

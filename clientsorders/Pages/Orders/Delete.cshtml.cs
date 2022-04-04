@@ -21,7 +21,7 @@ namespace ClientsOrders.Pages.Orders
         [BindProperty]
         public Order Order { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(int? id)
+        public async Task<IActionResult> OnGetAsync(int? id, string retPath="")
         {
             if (id == null)
             {
@@ -35,10 +35,14 @@ namespace ClientsOrders.Pages.Orders
             {
                 return NotFound();
             }
+
+            ViewData["RetPath"] = (retPath != "" && Url.IsLocalUrl(retPath)) ?
+                                   retPath : "./Index";
+
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync(int? id)
+        public async Task<IActionResult> OnPostAsync(int? id, string retPath="")
         {
             if (id == null)
             {
@@ -52,8 +56,13 @@ namespace ClientsOrders.Pages.Orders
                 _context.Orders.Remove(Order);
                 await _context.SaveChangesAsync();
             }
+            else
+            {
+                return NotFound();
+            }
 
-            return RedirectToPage("./Index");
+            return LocalRedirect((retPath != "" && Url.IsLocalUrl(retPath)) ?
+                                 retPath : "./Index");
         }
     }
 }
