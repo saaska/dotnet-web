@@ -38,13 +38,13 @@ namespace ClientsOrders
                 Environment.Exit(1);
             }
             services.AddDbContext<SqlServerDbContext>(
-                opt => opt.UseSqlServer("Server=127.0.0.1,1433;Database=backend;User Id=sa;Password=" + dbpass));
+                opt => opt.UseSqlServer("Server=127.0.0.1,54321;Database=backend;User Id=sa;Password=" + dbpass));
             services.AddSwaggerGen(c => {
                 c.SwaggerDoc("v1",
                     new Info {
                         Title = "Clients and Orders API",
                         Version = "v1",
-                        Description = "Простой экспорт ASP.NET Core Web API в Swagger",
+                        Description = "Простой экспорт ASP.NET Core Web API в Swagger"
                     });
             });
         }

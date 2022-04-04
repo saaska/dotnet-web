@@ -57,7 +57,9 @@ namespace SeedDB
                 DateTime person_t0 = new DateTime(1920, 1, 1, 0, 0, 0),
                          person_t1 = new DateTime(2000, 12, 31, 0, 0, 0),
                          company_t0 = new DateTime(1720, 1, 1, 0, 0, 0),
-                         company_t1 = new DateTime(2022, 1, 1, 0, 0, 0);
+                         company_t1 = new DateTime(2021, 1, 1, 0, 0, 0),
+                         order_t0 = new DateTime(2021, 1, 1, 0, 0, 0),
+                         order_t1 = new DateTime(2022, 3, 31, 0, 0, 0);  
 
                 for (int i = 0; i < clientCount; i++)
                 {
@@ -81,7 +83,7 @@ namespace SeedDB
                     var howManyOrders = f.PickRandom<int>(orderCounts);
                     for (int j = 0; j < howManyOrders; j++)
                     {
-                        DateTime dt = f.Date.Recent();
+                        DateTime dt = f.Date.Between(order_t0, order_t1);
                         dt = dt.AddMilliseconds(-dt.Millisecond);
                         BogusOrders.Add(new Order()
                         {
@@ -113,7 +115,7 @@ namespace SeedDB
 
             var dbCtx = new DbContext(
                 new DbContextOptionsBuilder<DbContext>()
-                .UseSqlServer($"Server=127.0.0.1,1433;User Id=sa;Password={dbpass}")
+                .UseSqlServer($"Server=127.0.0.1,54321;User Id=sa;Password={dbpass}")
                 .Options
             );
             dbCtx.Database.ExecuteSqlCommand("DROP DATABASE IF EXISTS backend;"+
@@ -121,7 +123,7 @@ namespace SeedDB
 
             var seedingCtx = new DataSeedingContext(
                 new DbContextOptionsBuilder<DataSeedingContext>()
-                .UseSqlServer($"Server=127.0.0.1,1433;User Id=sa;Password={dbpass};Database={DATABASE_NAME}")
+                .UseSqlServer($"Server=127.0.0.1,54321;User Id=sa;Password={dbpass};Database={DATABASE_NAME}")
                 .Options
             );
 
