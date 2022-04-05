@@ -23,4 +23,6 @@ WORKDIR /app
 COPY --from=publish /app/clientsorders .
 COPY --from=publish /app/SeedDB .
 
+WORKDIR /app
+EXPOSE 80
 # ENTRYPOINT ["dotnet", "clientsorders.dll"]
