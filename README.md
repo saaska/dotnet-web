@@ -1,4 +1,4 @@
-![docker build](../../workflows/dockerbuild.yml/badge.svg)
+![docker build](https://github.com/saaska/dotnet-web/actions/workflows/dockerbuild.yml/badge.svg)
 
 # dotnet-web
 
