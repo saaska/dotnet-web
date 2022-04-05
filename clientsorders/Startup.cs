@@ -19,6 +19,8 @@ namespace ClientsOrders
 {
     public class Startup
     {
+        const string DATABASE_NAME = "backend";
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -38,7 +40,7 @@ namespace ClientsOrders
                 Environment.Exit(1);
             }
             services.AddDbContext<SqlServerDbContext>(
-                opt => opt.UseSqlServer(dbconn + (dbconn.TrimEnd().EndsWith(';') ? "" : ";") + "Database={DATABASE_NAME}"));
+                opt => opt.UseSqlServer(dbconn + (dbconn.TrimEnd().EndsWith(';') ? "" : ";") + $"Database={DATABASE_NAME}"));
             services.AddSwaggerGen(c => {
                 c.SwaggerDoc("v1",
                     new Info {
