@@ -9,20 +9,20 @@ FROM buildenv AS publish
 WORKDIR /src
 COPY clientsorders/. ./clientsorders
 WORKDIR /src/clientsorders
-RUN dotnet build
-RUN dotnet publish -c release -o /app/clientsorders --no-restore
+RUN dotnet publish -c debug -o /app/clientsorders --no-restore
 
 WORKDIR /src
 COPY SeedDB/. ./SeedDB
 WORKDIR /src/SeedDB
-RUN dotnet build
-RUN dotnet publish -c release -o /app/SeedDB --no-restore
+RUN dotnet publish -c debug -o /app/SeedDB --no-restore
 
 FROM mcr.microsoft.com/dotnet/core/aspnet:2.1 AS final
 WORKDIR /app
 COPY --from=publish /app/clientsorders .
 COPY --from=publish /app/SeedDB .
+COPY run.sh .
+RUN chmod +x ./run.sh
 
 WORKDIR /app
 EXPOSE 80
-# ENTRYPOINT ["dotnet", "clientsorders.dll"]
+CMD ./run.sh
