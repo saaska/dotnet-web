@@ -2,19 +2,45 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Console;
 
 using Bogus;
 
 using ClientsOrders.Models;
 
 namespace SeedDB
-{
+{   
     public class Program
     {
+        const string DBSERVER = "PGSQL";  
+        static Dictionary<string, Dictionary<string, string>> dbopt =
+            new Dictionary<string, Dictionary<string, string>>
+            {
+                ["PGSQL"] = new Dictionary<string, string> {
+                    ["defdate"] = "NOW()",
+                    ["locale"] = "ENCODING 'UTF8'"
+                },
+                ["MSSQL"] = new Dictionary<string, string>
+                {
+                    ["defdate"] = "CONVERT(datetime2(0),GETDATE())",
+                    ["locale"] = "COLLATE Yakut_100_CI_AS_SC_UTF8"
+                }
+            };
+
         public class DataSeedingContext : DbContext
         {
+
             public DbSet<Client> Clients { get; set; }
             public DbSet<Order> Orders { get; set; }
+
+            // #region DefineLoggerFactory
+            // public static readonly LoggerFactory MyLoggerFactory
+            //     = new LoggerFactory(new[] {new ConsoleLoggerProvider(((category, level) => true), true)});
+            // #endregion
+
+            // protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+            // => optionsBuilder.UseLoggerFactory(MyLoggerFactory);
 
             public DataSeedingContext(DbContextOptions<DataSeedingContext> options)
                 : base(options)
@@ -26,7 +52,17 @@ namespace SeedDB
                 // Автозаполнению текущего времени в заказе
                 modelBuilder.Entity<Order>()
                     .Property(order => order.CreatedOn)
-                    .HasDefaultValueSql("CONVERT(datetime2(0),GETDATE())");
+                    .HasDefaultValueSql(dbopt[DBSERVER]["defdate"]);
+
+                // Identity для Postgres
+                if (DBSERVER == "PGSQL") {
+                    modelBuilder.Entity<Client>()
+                        .Property(p => p.Id)
+                        .UseNpgsqlIdentityByDefaultColumn();
+                    modelBuilder.Entity<Order>()
+                        .Property(p => p.Id)
+                        .UseNpgsqlIdentityByDefaultColumn();
+                }
 
                 // Индексы
                 modelBuilder.Entity<Client>()
@@ -39,7 +75,6 @@ namespace SeedDB
                     .HasIndex(order => new { order.ClientId, order.CreatedOn, order.Id });
                 modelBuilder.Entity<Order>()
                     .HasIndex(order => new { order.ClientId, order.Name, order.Id });
-
 
                 // родить столько клиентов...
                 const int clientCount = 1000;
@@ -88,7 +123,7 @@ namespace SeedDB
                         BogusOrders.Add(new Order()
                         {
                             Id = totalOrders + 1,
-                            ClientId = i + 1,
+                            ClientId = client.Id, //i + 1,
                             Name = f.Commerce.ProductName(),
                             CreatedOn = dt,
                             Status = f.PickRandom<Status>(Status.InProgress, Status.Done, Status.ToDo)
@@ -102,8 +137,6 @@ namespace SeedDB
             }
         }
 
-        const string DATABASE_NAME = "backend";
-
         public static void Main(string[] args)
         {
             var dbconn = Environment.GetEnvironmentVariable("DBCONN");
@@ -114,24 +147,43 @@ namespace SeedDB
             }
 
             var dbCtx = new DbContext(
-                new DbContextOptionsBuilder<DbContext>()
-                .UseSqlServer(dbconn)
-                .Options
+                DBSERVER == "MSSQL" ?
+                    new DbContextOptionsBuilder<DbContext>()
+                    .UseSqlServer(dbconn)
+                    .Options
+                :
+                    new DbContextOptionsBuilder<DbContext>()
+                    .UseNpgsql(dbconn)
+                    .Options
             );
-            dbCtx.Database.ExecuteSqlCommand($"DROP DATABASE IF EXISTS {DATABASE_NAME}; "+
-                $"CREATE DATABASE {DATABASE_NAME} COLLATE Yakut_100_CI_AS_SC_UTF8;");
+            dbCtx.Database.ExecuteSqlCommand($"DROP DATABASE IF EXISTS backend; "+
+                $"CREATE DATABASE backend {dbopt[DBSERVER]["locale"]};");
 
+            dbconn += (dbconn.TrimEnd().EndsWith(';') ? "" : ";") + $"Database=backend";
             var seedingCtx = new DataSeedingContext(
-                new DbContextOptionsBuilder<DataSeedingContext>()
-                .UseSqlServer(dbconn + (dbconn.TrimEnd().EndsWith(';') ? "" : ";") + $"Database={DATABASE_NAME}")
-                .Options
+                DBSERVER == "MSSQL" ?
+                    new DbContextOptionsBuilder<DataSeedingContext>()
+                    .UseSqlServer(dbconn)
+                    .Options
+                :
+                    new DbContextOptionsBuilder<DataSeedingContext>()
+                    .UseNpgsql(dbconn)
+                    .Options
             );
 
             seedingCtx.Database.EnsureCreated();
 
-            Console.WriteLine($"The database <{DATABASE_NAME}> now has "+
-                              $"{seedingCtx.Clients.Count()} clients and "+
-                              $"{seedingCtx.Orders.Count()} orders.");
+            int numClients = seedingCtx.Clients.Count(), 
+                numOrders = seedingCtx.Orders.Count();
+
+            Console.WriteLine("The database backend now has "+
+                              $"{numClients} clients and "+
+                              $"{numOrders} orders.");
+
+            if (DBSERVER == "PGSQL") {
+                seedingCtx.Database.ExecuteSqlCommand($"ALTER TABLE \"Orders\" ALTER COLUMN \"Id\" RESTART WITH {numOrders + 1};"
+                + $"ALTER TABLE \"Clients\" ALTER COLUMN \"Id\" RESTART WITH {numClients + 1};");
+            }
 
             Console.WriteLine("Done");
         }

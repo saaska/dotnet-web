@@ -12,9 +12,9 @@ namespace ClientsOrders.Pages.Clients
 {
     public class EditModel : PageModel
     {
-        private readonly ClientsOrders.Models.SqlServerDbContext _context;
+        private readonly ClientsOrders.Models.MyDbContext _context;
 
-        public EditModel(ClientsOrders.Models.SqlServerDbContext context)
+        public EditModel(ClientsOrders.Models.MyDbContext context)
         {
             _context = context;
         }

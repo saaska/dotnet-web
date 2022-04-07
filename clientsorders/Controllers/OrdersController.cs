@@ -13,9 +13,9 @@ namespace ClientsOrders.Controllers
     [ApiController]
     public class OrdersController : ControllerBase
     {
-        private readonly SqlServerDbContext _context;
+        private readonly MyDbContext _context;
 
-        public OrdersController(SqlServerDbContext context)
+        public OrdersController(MyDbContext context)
         {
             _context = context;
         }

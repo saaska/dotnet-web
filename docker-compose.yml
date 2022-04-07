@@ -2,17 +2,13 @@ version: '3.4'
 
 services:
   db:
-    image: mcr.microsoft.com/mssql/server:2019-CU15-ubuntu-20.04
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: postgres
     ports:
-      - 54321:1433
+      - 54321:5432
     networks:
-      - frontend
+      - backend
     environment:
-        SA_PASSWORD: "InsideContainer2022"
-        ACCEPT_EULA: "Y"
+        POSTGRES_PASSWORD: "InsideContainer2022"
 
   app:
     image: zaazp/dotnetweb

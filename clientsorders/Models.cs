@@ -88,9 +88,26 @@ namespace ClientsOrders.Models
     }
 
 
-    public class SqlServerDbContext : DbContext
+    public class MyDbContext : DbContext
     {
-        public SqlServerDbContext(DbContextOptions<SqlServerDbContext> options)
+        const string DBSERVER = "PGSQL";
+        
+        static Dictionary<string, Dictionary<string, string>> dbopt =
+            new Dictionary<string, Dictionary<string, string>>
+            {
+                ["PGSQL"] = new Dictionary<string, string>
+                {
+                    ["defdate"] = "NOW()",
+                    ["locale"] = "ENCODING 'UTF8'"
+                },
+                ["MSSQL"] = new Dictionary<string, string>
+                {
+                    ["defdate"] = "CONVERT(datetime2(0),GETDATE())",
+                    ["locale"] = "COLLATE Yakut_100_CI_AS_SC_UTF8"
+                }
+            };
+
+        public MyDbContext(DbContextOptions<MyDbContext> options)
             : base(options)
         {
         }
@@ -100,7 +117,16 @@ namespace ClientsOrders.Models
             // Автозаполнению текущего времени в заказе
             modelBuilder.Entity<Order>()
                 .Property(order => order.CreatedOn)
-                .HasDefaultValueSql("CONVERT(datetime2(0),GETDATE())");
+                .HasDefaultValueSql(dbopt[DBSERVER]["defdate"]);
+
+            if (DBSERVER == "PGSQL") {
+                modelBuilder.Entity<Client>()
+                    .Property(p => p.Id)
+                    .UseNpgsqlIdentityByDefaultColumn();
+                modelBuilder.Entity<Order>()
+                    .Property(p => p.Id)
+                    .ValueGeneratedOnAdd();
+            }
 
             // Индексы
             modelBuilder.Entity<Client>()

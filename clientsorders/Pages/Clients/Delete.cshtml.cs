@@ -11,9 +11,9 @@ namespace ClientsOrders.Pages.Clients
 {
     public class DeleteModel : PageModel
     {
-        private readonly ClientsOrders.Models.SqlServerDbContext _context;
+        private readonly ClientsOrders.Models.MyDbContext _context;
 
-        public DeleteModel(ClientsOrders.Models.SqlServerDbContext context)
+        public DeleteModel(ClientsOrders.Models.MyDbContext context)
         {
             _context = context;
         }

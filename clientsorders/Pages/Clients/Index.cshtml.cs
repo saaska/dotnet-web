@@ -11,9 +11,9 @@ namespace ClientsOrders.Pages.Clients
 {
     public class IndexModel : PageModel
     {
-        private readonly ClientsOrders.Models.SqlServerDbContext _context;
+        private readonly ClientsOrders.Models.MyDbContext _context;
 
-        public IndexModel(ClientsOrders.Models.SqlServerDbContext context) => _context = context;
+        public IndexModel(ClientsOrders.Models.MyDbContext context) => _context = context;
 
         public IList<Client> Client { get;set; }
 

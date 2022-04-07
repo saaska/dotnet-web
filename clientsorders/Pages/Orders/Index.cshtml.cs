@@ -13,7 +13,7 @@ namespace ClientsOrders.Pages.Orders
     public static class DataSet
     {
         public static async Task<IList<OrderDto> > Filter(
-            SqlServerDbContext _context,
+            MyDbContext _context,
             PageModel Model,
             int? ClientId,
             int p = 1, int pSize = 20, string sortBy = "", string q = "")
@@ -96,9 +96,9 @@ namespace ClientsOrders.Pages.Orders
 
     public class IndexModel : PageModel
     {
-        private readonly ClientsOrders.Models.SqlServerDbContext _context;
+        private readonly ClientsOrders.Models.MyDbContext _context;
 
-        public IndexModel(ClientsOrders.Models.SqlServerDbContext context) => _context = context;
+        public IndexModel(ClientsOrders.Models.MyDbContext context) => _context = context;
 
         public IList<OrderDto> Orders { get;set; }
 

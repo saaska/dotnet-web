@@ -11,9 +11,9 @@ namespace ClientsOrders.Pages.Orders
 {
     public class DetailsModel : PageModel
     {
-        private readonly ClientsOrders.Models.SqlServerDbContext _context;
+        private readonly ClientsOrders.Models.MyDbContext _context;
 
-        public DetailsModel(ClientsOrders.Models.SqlServerDbContext context)
+        public DetailsModel(ClientsOrders.Models.MyDbContext context)
         {
             _context = context;
         }

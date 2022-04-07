@@ -1,2 +1,2 @@
 #!/bin/sh
-export DBCONN="Server=127.0.0.1,54321;User Id=sa;Password=$DBPASS"
+export DBCONN="Host=localhost;Port=54321;Username=postgres;Password=$DBPASS"
