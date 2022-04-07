@@ -34,5 +34,5 @@ jobs:
         push: true
         tags: ${{ secrets.DOCKER_HUB_USERNAME }}/dotnetweb:latest
         cache-from: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/dotnetweb:buildcache
-          cache-to: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/dotnetweb:buildcache,mode=ma
+        cache-to: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/dotnetweb:buildcache,mode=max
 
