@@ -19,8 +19,6 @@ services:
     networks:
       - frontend
       - backend
-    environment:
-        DBCONN: "Server=db;User Id=sa;Password=InsideContainer2022"
 
 networks:
   frontend:

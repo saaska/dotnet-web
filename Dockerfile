@@ -2,7 +2,6 @@ FROM mcr.microsoft.com/dotnet/core/sdk:2.1 AS buildenv
 WORKDIR /src
 COPY *.sln .
 COPY clientsorders/*.csproj ./clientsorders/
-COPY SeedDB/*.csproj ./SeedDB/
 RUN dotnet restore
 
 FROM buildenv AS publish
@@ -10,11 +9,6 @@ WORKDIR /src
 COPY clientsorders/. ./clientsorders
 WORKDIR /src/clientsorders
 RUN dotnet publish -c debug -o /app/clientsorders --no-restore
-
-WORKDIR /src
-COPY SeedDB/. ./SeedDB
-WORKDIR /src/SeedDB
-RUN dotnet publish -c debug -o /app/SeedDB --no-restore
 
 FROM postgres AS FINAL
 WORKDIR /app
@@ -29,7 +23,6 @@ RUN apt update \
     && rm -rf /var/lib/apt/lists/*
 
 COPY --from=publish /app/clientsorders .
-COPY --from=publish /app/SeedDB .
 
 COPY run.sh .
 RUN chmod +x ./run.sh
@@ -37,7 +30,7 @@ RUN chmod +x ./run.sh
 WORKDIR /app
 EXPOSE 80
 ENV POSTGRES_PASSWORD=InsideContainer2022
-ENV DBCONN=Host=localhost;Port=5432;Username=postgres;Password=$POSTGRES_PASSWORD
+ENV DATABASE_URL=postgres://postgres:$POSTGRES_PASSWORD@localhost:5432
 ENV ASPNETCORE_URLS=http://+:80
 
 STOPSIGNAL SIGINT

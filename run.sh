@@ -6,12 +6,8 @@ set -e
 # запуск Postgres
 /usr/local/bin/docker-entrypoint.sh postgres&
 
-# населяем базу, так как сервер стартует медленно, повторяем 
-# попытки с паузой 2с, пока не получится
-until dotnet SeedDB.dll; do
->&2 echo "Жду старта Postgres..."
-sleep 2
-done
+echo "Жду старта Postgres..."
+sleep 15
 
 # запуск основного приложения
 exec dotnet clientsorders.dll $*

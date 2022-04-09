@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Bogus" Version="34.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.App" Version="$(AspNetCoreAppRuntimeFrameworkVersion)" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.1.14" />
     <PackageReference Include="Microsoft.AspNetCore.Razor" Version="2.1.2" />
