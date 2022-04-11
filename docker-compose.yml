@@ -11,7 +11,7 @@ services:
         POSTGRES_PASSWORD: "InsideContainer2022"
 
   app:
-    image: zaazp/dotnetweb
+    image: dotnetweb
     depends_on:
       - db
     ports:
@@ -19,6 +19,9 @@ services:
     networks:
       - frontend
       - backend
+    environment:
+      DATABASE_URL: "postgres://postgres:InsideContainer2022@db:5432"
+
 
 networks:
   frontend:
