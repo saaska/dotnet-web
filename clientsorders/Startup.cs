@@ -96,6 +96,15 @@ namespace ClientsOrders
                 case "PGSQL":
                     dbOptions["defdate"] = "NOW()";
                     dbOptions["locale"] = "ENCODING 'UTF8'";
+                    
+                    // heroku requires SSL on db connections,
+                    // https://stackoverflow.com/questions/44161509/message28000-no-pg-hba-conf-entry-for-host-xx-xxx-xxx-xxxx-user-user
+                    if (dbOptions["Host"].EndsWith(".com"))
+                    {
+                        dbOptions["Sslmode"] = "Require"; 
+                        dbOptions["Trust Server Certificate"] = "true";
+
+                    } 
                     break;
             }
         }
