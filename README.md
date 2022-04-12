@@ -1,5 +1,6 @@
 ![build](https://github.com/saaska/dotnet-web/actions/workflows/build.yml/badge.svg)
 ![docker build](https://github.com/saaska/dotnet-web/actions/workflows/dockerbuild.yml/badge.svg)
+![heroku deploy](https://github.com/saaska/dotnet-web/actions/workflows/herokudeploy.yml/badge.svg)
 
 # dotnet-web
 
