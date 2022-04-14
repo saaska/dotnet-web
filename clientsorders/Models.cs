@@ -31,13 +31,14 @@ namespace ClientsOrders.Models
         [Display(Name = "INN")]
         [MinLength(10), MaxLength(12)]
         [Required]
+        [RegularExpression(@"^(\d{10}|\d{12})$", ErrorMessage="Please enter 10 or 12 digits")]
         public string Inn { get; set; }
         
         [Display(Name = "Phone Number")]
         [DataType(DataType.PhoneNumber)]
-        [MinLength(6)]
-        [MaxLength(14)]
+        [MinLength(6), MaxLength(14)]
         [Required]
+        [RegularExpression(@"[0-9\-() \+]{6,14}", ErrorMessage="Please enter from 6 to 14 digits")]
         public string PhoneNumber { get; set; }
 
         [MaxLength(60)]
