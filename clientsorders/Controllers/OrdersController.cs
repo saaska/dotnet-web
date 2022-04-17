@@ -22,46 +22,30 @@ namespace ClientsOrders.Controllers
 
         // GET: api/Orders
         [HttpGet]
-        public IEnumerable<Order> GetOrders()
-        {
-            return _context.Orders;
-        }
+        public IEnumerable<OrderBase> GetOrders() =>
+            _context.Orders.Select(o => new OrderBase(o));
 
         // GET: api/Orders/5
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetOrder([FromRoute] int id)
+        public async Task<ActionResult<OrderBase>> GetOrder([FromRoute] int id)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
+            if (!ModelState.IsValid) return BadRequest(ModelState);
             var order = await _context.Orders.FindAsync(id);
-
-            if (order == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(order);
+            if (order == null) return NotFound();
+            
+            return Ok(new OrderBase(order));
         }
 
         // PUT: api/Orders/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutOrder([FromRoute] int id, [FromBody] Order order)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            if (id != order.Id)
-            {
-                return BadRequest();
-            }
-
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+            
+            if (id != order.Id) return BadRequest();
+            
             _context.Entry(order).State = EntityState.Modified;
-
+            
             try
             {
                 await _context.SaveChangesAsync();
@@ -85,10 +69,7 @@ namespace ClientsOrders.Controllers
         [HttpPost]
         public async Task<IActionResult> PostOrder([FromBody] Order order)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+            if (!ModelState.IsValid) return BadRequest(ModelState);
 
             _context.Orders.Add(order);
             await _context.SaveChangesAsync();
@@ -100,26 +81,19 @@ namespace ClientsOrders.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteOrder([FromRoute] int id)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+            if (!ModelState.IsValid) return BadRequest(ModelState);
 
             var order = await _context.Orders.FindAsync(id);
-            if (order == null)
-            {
-                return NotFound();
-            }
-
+            if (order == null) return NotFound();
+            
             _context.Orders.Remove(order);
+            
             await _context.SaveChangesAsync();
 
             return Ok(order);
         }
 
-        private bool OrderExists(int id)
-        {
-            return _context.Orders.Any(e => e.Id == id);
-        }
+        private bool OrderExists(int id) =>
+            _context.Orders.Any(e => e.Id == id);
     }
 }

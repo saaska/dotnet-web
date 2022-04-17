@@ -13,6 +13,7 @@ namespace ClientsOrders.Controllers
     [ApiController]
     public class ClientsController : ControllerBase
     {
+
         private readonly MyDbContext _context;
 
         public ClientsController(MyDbContext context)
@@ -21,39 +22,33 @@ namespace ClientsOrders.Controllers
         }
 
         // GET: api/Clients
+        // не включать orders
         [HttpGet]
-        public IEnumerable<Client> GetClients()
-        {
-            return _context.Clients;
-        }
+        public IEnumerable<ClientBase> GetClients() =>
+            _context.Clients.Select(c => new ClientBase(c));
+        
 
         // GET: api/Clients/5
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetClient([FromRoute] int id)
+        public async Task<ActionResult<ClientDetailDto>> GetClient([FromRoute] int id)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+            if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var client = await _context.Clients.FindAsync(id);
+            var client = await _context.Clients.Include(c=>c.Orders)
+                .FirstOrDefaultAsync(c => c.Id == id);
 
-            if (client == null)
-            {
-                return NotFound();
-            }
+            if (client == null) return NotFound();
 
-            return Ok(client);
+            var dto = new ClientDetailDto(client);
+
+            return Ok(dto);
         }
 
         // PUT: api/Clients/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutClient([FromRoute] int id, [FromBody] Client client)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+            if (!ModelState.IsValid) return BadRequest(ModelState);
 
             if (id != client.Id)
             {

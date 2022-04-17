@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
@@ -12,7 +13,8 @@ namespace ClientsOrders.Models
     public enum Status { ToDo, InProgress, Done }
 
 
-    public class Client
+    // Основа для Клиента, без навигационного свойства Заказы
+    public class ClientBase
     {
         [DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)]
         [Key]
@@ -44,11 +46,28 @@ namespace ClientsOrders.Models
         [MaxLength(60)]
         public string Email { get; set; }
 
+        public  ClientBase(){}
+
+        // "стирающий" конструктор, отбрасыващий Заказы
+        public ClientBase(Client c) : this() {
+            Id = c.Id; 
+            Name = c.Name; 
+            BirthDate = c.BirthDate; 
+            Inn = c.Inn; 
+            PhoneNumber = c.PhoneNumber; 
+            Email = c.Email; 
+        }
+    }
+
+    
+    public class Client : ClientBase
+    {
         virtual public IList<Order> Orders { get; } = new List<Order>();
     }
 
 
-    public class Order
+    // Заказ, без навигационного свойства Клиент, только ClientId
+    public class OrderBase
     {
         [DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)]
         [Key]
@@ -68,31 +87,54 @@ namespace ClientsOrders.Models
         [Display(Name = "Client")]
         public int ClientId { get; set; }
 
+        public OrderBase() {}
+
+        // "стирающий" конструктор, отбрасыващий ссылку на Клиента
+        public OrderBase(Order o) : this() 
+        {
+            Id = o.Id;
+            Name = o.Name;
+            CreatedOn = o.CreatedOn;
+            Status = o.Status;
+            ClientId = o.ClientId;
+        }
+    }
+
+
+    public class Order : OrderBase
+    {
         [ForeignKey("ClientId")]
         public Client Client { get; set; }
     }
 
 
-    public class OrderDto
+    // используется на сайте, для показа в заказе имени клиента вместо его Id
+    public class OrderDto : OrderBase
     {
-        public int Id { get; set; }
-
-        [MaxLength(100)]
-        [Required]
-        public string Name { get; set; }
-
-        [Display(Name = "Created On")]
-        [Required]
-        public DateTime CreatedOn { get; set; }
-
-        [Required]
-        public Status Status { get; set; }
-
         [Display(Name = "Client")]
         public string ClientName { get; set; }
     }
 
+    // используется в api, содержит массив id заказов клиента
+    public class ClientDetailDto : ClientBase
+    {
+        virtual public IList<int> Orders { get; set; } = new List<int>();
 
+        public ClientDetailDto() {}
+
+        public ClientDetailDto(Client c) {
+            Id = c.Id;
+            Name = c.Name;
+            BirthDate = c.BirthDate;
+            Inn = c.Inn;
+            PhoneNumber = c.PhoneNumber;
+            Email = c.Email;
+            Orders = (from o in c.Orders select o.Id).ToList();
+        }
+    }
+
+
+    // основной класс для подключения к БД
     public class MyDbContext : DbContext
     {
         public string DBSERVER { get; }
@@ -128,12 +170,8 @@ namespace ClientsOrders.Models
             if (DBSERVER == "PGSQL") {
                 modelBuilder.Entity<Client>()
                     .Property(p => p.Id).UseNpgsqlIdentityByDefaultColumn();
-                // modelBuilder.Entity<Client>()
-                //     .Property(p => p.Id).ValueGeneratedOnAdd();
                 modelBuilder.Entity<Order>()
                     .Property(p => p.Id).UseNpgsqlIdentityByDefaultColumn();
-                // modelBuilder.Entity<Order>()
-                //     .Property(p => p.Id).ValueGeneratedOnAdd();
             }
 
             // Индексы
@@ -153,6 +191,8 @@ namespace ClientsOrders.Models
         public DbSet<Order> Orders { get; set; }
     }
 
+
+    // используется для генерации данных для новой пустой базы
     public class DbSeedingContext : MyDbContext
     {
         public DbSeedingContext(DbContextOptions<MyDbContext> options, string _DBSERVER="PGSQL")
